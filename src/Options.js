@@ -5,7 +5,7 @@ class Options extends React.Component{
 
     render(){
         return(
-            <option >{this.props.OptionData}</option>            
+            <option value={this.props.OptionData}>{this.props.OptionData}</option>            
         )            
     }    
 

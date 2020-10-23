@@ -5,7 +5,6 @@ class GetDataFromAPI extends React.Component{
 
 
     render(){
-        console.log(this.props.props)
         return(
             <div>
             {this.props.props.result ? "The current exchange rate for " + this.props.props.from + " to " + this.props.props.to 

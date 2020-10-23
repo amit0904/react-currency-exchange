@@ -10,7 +10,9 @@ class App extends React.Component{
 
     this.state = {
       CURRENCYLISTAPIDATA : [],
-      APIDATA : {}
+      APIDATA : {},
+      fromCur : "",
+      toCur : ""
     }
 
     this.GetRate = this.GetRate.bind(this)
@@ -21,20 +23,19 @@ class App extends React.Component{
     fetch('https://openexchangerates.org/api/currencies.json')
     .then(response => response.json())
     .then(data => this.setState({CURRENCYLISTAPIDATA : Object.keys(data)}))
-    .catch(err => err)
-
+    .catch(err => err);
   
   }
 
-  GetRate(){
+  GetRate(e){
     
-    let fromCur = document.querySelectorAll('.fromCur')
-    let toCur = document.querySelectorAll('.toCur')
-    console.log(fromCur[0].value)
+    const {name , value} = e.target
 
-    if (fromCur[0].value !== "" && fromCur[0].value){
+    this.setState({[name] : value})  
 
-      fetch('https://v3.exchangerate-api.com/pair/4b401bf0886f2f3a3dd2e015/' + fromCur[0].value + '/' + toCur[0].value)
+    if (this.state.fromCur !== "" & this.state.toCur !== ""){
+
+      fetch('https://v3.exchangerate-api.com/pair/4b401bf0886f2f3a3dd2e015/' + this.state.fromCur + '/' + this.state.toCur)
       .then(response => response.json())
       .then(data => this.setState({APIDATA : data}))
       .catch(err => err)
@@ -50,22 +51,27 @@ class App extends React.Component{
 
   render(){
 
-      const OPTIONS = this.state.CURRENCYLISTAPIDATA.map( element => <Options OptionData = {element} key={element}/>)
-      
-      console.log(this.state.APIDATA)
+      const OPTIONS = this.state.CURRENCYLISTAPIDATA.map( element => <Options OptionData = {element} key={element}/>);
+
+      (this.state.CURRENCYLISTAPIDATA !== "") ? this.setState({fromCur : this.state.CURRENCYLISTAPIDATA[0]}) : this.setState({fromCur : ""});
+     
+         
     return (
         <div>    
           <GetDataFromAPI props={this.state.APIDATA}/>
           <br/>
           <br/>
-            <select className='fromCur' onChange={this.GetRate}>
-              {OPTIONS}    
+            <select name="fromCur" value={this.state.fromCur} onChange={this.GetRate}>
+              {OPTIONS}                 
             </select>
+            <h1>{this.state.fromCur}</h1>
           <br/>
           <br/>
-            <select className='toCur' onChange={this.GetRate}>
-              {OPTIONS}    
+            <select name="toCur" value={this.state.toCur} onChange={this.GetRate}>
+              {OPTIONS}
+                 
             </select>
+            <h1>{this.state.toCur}</h1>
         </div>    
     )
   }
